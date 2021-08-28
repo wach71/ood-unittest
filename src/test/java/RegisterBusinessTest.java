@@ -72,6 +72,7 @@ class RegisterBusinessTest {
         }
     }
 
+
     @Test
     @DisplayName("สามารถบันทึกข้อมูลได้")
     public void case07() {
@@ -82,5 +83,40 @@ class RegisterBusinessTest {
         speaker.setEmail("janus@gmail.com");
         int speakerId = registerBusiness.register(new xxx(), speaker);
         assertEquals(1000, speakerId);
+    }
+
+    @Test
+    @DisplayName("ไม่สามารถบันทึก speaker")
+    public void testRegisterWithCantSaveSpeaker() {
+        RegisterBusiness registerBusiness = new RegisterBusiness();
+        try {
+            Speaker speaker = new Speaker();
+            speaker.setFirstName("jan");
+            speaker.setLastName("kum");
+            speaker.setEmail("jan@live.com");
+            registerBusiness.register(null, speaker);
+        } catch (SaveSpeakerException e) {
+            if(!e.getMessage().equals("Can't save a speaker.")) {
+                fail();
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("ไม่ทำการกำหนดรูปแบบ email email ไม่ถูกต้อง")
+    public void case08() {
+        RegisterBusiness registerBusiness = new RegisterBusiness();
+        try {
+            Speaker speaker = new Speaker();
+            speaker.setFirstName("jan");
+            speaker.setLastName("jan");
+            speaker.setEmail("janus@kum.com");
+            registerBusiness.register(null, speaker);
+            fail();
+        } catch (SpeakerDoesntMeetRequirementsException e) {
+            if(!e.getMessage().equals("Speaker doesn't meet our standard rules.")) {
+                fail();
+            }
+        }
     }
 }
